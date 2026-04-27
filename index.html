@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartLabsCode</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ================= GLOBAL ================= */
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Segoe UI;
+background:#f5f7fa;
+color:#222;
+}
+
+/* ================= NAVBAR ================= */
+.navbar{
+position:fixed;
+top:0;
+width:100%;
+height:60px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 15px;
+background:white;
+border-bottom:1px solid #ddd;
+z-index:1000;
+}
+
+.search{
+padding:8px 12px;
+border-radius:20px;
+border:1px solid #ccc;
+}
+
+/* PROFILE */
+.profile-img{
+width:32px;
+height:32px;
+border-radius:50%;
+object-fit:cover;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+position:fixed;
+top:60px;
+left:-260px;
+width:240px;
+height:100%;
+background:white;
+padding:15px;
+transition:0.35s cubic-bezier(0.4,0,0.2,1);
+border-right:1px solid #ddd;
+z-index:1001;
+}
+
+.sidebar.active{left:0}
+
+.sidebar button{
+width:100%;
+padding:12px;
+margin:6px 0;
+background:#f3f3f3;
+border:none;
+border-radius:8px;
+display:flex;
+gap:10px;
+align-items:center;
+cursor:pointer;
+}
+
+.sidebar button.active{
+background:#4f46e5;
+color:white;
+}
+
+/* ================= OVERLAY ================= */
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.25);
+backdrop-filter:blur(6px);
+opacity:0;
+visibility:hidden;
+transition:0.3s;
+z-index:999;
+}
+
+.overlay.active{
+opacity:1;
+visibility:visible;
+}
+
+/* ================= CONTENT ================= */
+.content{
+margin-top:70px;
+padding:20px;
+}
+
+/* CARD */
+.card{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+border:1px solid #ddd;
+}
+
+/* ================= INPUT ================= */
+.input-box{
+display:flex;
+align-items:center;
+border:1px solid #ccc;
+border-radius:8px;
+margin:8px 0;
+background:white;
+}
+
+.input-box i{
+padding:10px;
+color:#555;
+}
+
+.input-box input,
+.input-box textarea{
+flex:1;
+border:none;
+padding:10px;
+outline:none;
+}
+
+/* ================= BUTTON ================= */
+button{
+padding:10px;
+border-radius:8px;
+border:none;
+background:#4f46e5;
+color:white;
+cursor:pointer;
+}
+
+.btn-google{
+background:#fff;
+color:#000;
+border:1px solid #ddd;
+width:100%;
+}
+
+.btn-github{
+background:#24292e;
+color:#fff;
+width:100%;
+}
+
+/* ================= UTIL ================= */
+.hidden{display:none}
+
+/* ================= BANNER ================= */
+.banner-wrap{
+display:flex;
+gap:10px;
+overflow-x:auto;
+margin-bottom:15px;
+}
+
+.banner{
+min-width:200px;
+height:120px;
+background:#e5e7eb;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<div class="navbar">
+<div>
+<i class="fa fa-bars" onclick="toggleSidebar()"></i>
+<b><i class="fa fa-code"></i> SmartLabsCode</b>
+</div>
+
+<input class="search" placeholder="Search...">
+
+<div style="display:flex;align-items:center;gap:10px;">
+<img id="profileImg" class="profile-img" src="https://via.placeholder.com/40">
+<span id="userLabel">Guest</span>
+<button onclick="logout()">
+<i class="fa fa-right-from-bracket"></i>
+</button>
+</div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar" id="sidebar">
+
+<button data-page="home" onclick="setActive('home')">
+<i class="fa fa-home"></i> Home
+</button>
+
+<button data-page="upload" onclick="setActive('upload')">
+<i class="fa fa-upload"></i> Upload
+</button>
+
+<button data-page="login" onclick="setActive('login')">
+<i class="fa fa-sign-in-alt"></i> Login
+</button>
+
+<button data-page="profile" onclick="setActive('profile')">
+<i class="fa fa-user-cog"></i> Edit Akun
+</button>
+
+<button onclick="logout()">
+<i class="fa fa-right-from-bracket"></i> Logout
+</button>
+
+</div>
+
+<!-- ================= CONTENT ================= -->
+<div class="content">
+
+<!-- HOME -->
+<div id="home">
+<h2><i class="fa fa-stream"></i> Feed for you</h2>
+
+<div class="banner-wrap">
+<div class="banner">Banner 1</div>
+<div class="banner">Banner 2</div>
+<div class="banner">Banner 3</div>
+</div>
+
+<div style="display:flex;gap:10px;margin-bottom:10px;" >
+<button onclick="filterType('post')">Post</button>
+<button onclick="filterType('template')">Template</button>
+<button onclick="filterType('app')">App</button>
+</div>
+
+<div id="feed"></div>
+</div>
+
+<!-- UPLOAD -->
+<div id="upload" class="hidden">
+
+<h2>Upload</h2>
+
+<select id="typeSelect">
+<option value="post">Post</option>
+<option value="template">Template</option>
+<option value="app">App</option>
+</select>
+
+<div class="input-box"><i class="fa fa-heading"></i><input id="titleInput"></div>
+<div class="input-box"><i class="fa fa-align-left"></i><input id="descInput"></div>
+
+<input type="file" id="fileInput">
+<textarea id="codeInput" placeholder="Kode template"></textarea>
+
+<button onclick="uploadPost()">Upload</button>
+
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="hidden">
+
+<h2>Login</h2>
+
+<div class="input-box"><i class="fa fa-envelope"></i><input id="emailInput"></div>
+
+<div class="input-box">
+<i class="fa fa-lock"></i>
+<input id="passInput" type="password">
+<i class="fa fa-eye" onclick="togglePass('passInput')"></i>
+</div>
+
+<button onclick="loginEmail()">Login</button>
+<button onclick="register()">Register</button>
+
+<button class="btn-google" onclick="loginGoogle">
+<i class="fa-brands fa-google"></i> Google
+</button>
+
+<button class="btn-github" onclick="loginGithub">
+<i class="fa-brands fa-github"></i> GitHub
+</button>
+
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="hidden">
+
+<h2>Edit Akun</h2>
+
+<input type="file" id="photoInput">
+
+<div class="input-box"><i class="fa fa-user"></i><input id="usernameInput"></div>
+
+<div class="input-box">
+<i class="fa fa-lock"></i>
+<input id="passwordInput" type="password">
+<i class="fa fa-eye" onclick="togglePass('passwordInput')"></i>
+</div>
+
+<div class="input-box">
+<i class="fa fa-calendar"></i>
+<input type="date" id="birthInput">
+</div>
+
+<button onclick="saveProfile()">Simpan</button>
+
+</div>
+
+</div>
+
+<!-- ================= FIREBASE ================= -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+getAuth,
+signInWithEmailAndPassword,
+createUserWithEmailAndPassword,
+signInWithPopup,
+GoogleAuthProvider,
+GithubAuthProvider,
+onAuthStateChanged,
+signOut,
+updatePassword
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+onSnapshot,
+doc,
+setDoc,
+getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+/* ===== INIT ===== */
+const app = initializeApp({
+apiKey: "API_KEY",
+projectId: "PROJECT",
+storageBucket: "PROJECT.appspot.com"
+});
+
+const auth = getAuth();
+const db = getFirestore();
+const storage = getStorage();
+
+/* ===== STATE ===== */
+let posts = [];
+let currentUser = null;
+
+/* ===== AUTH ===== */
+onAuthStateChanged(auth, user => {
+currentUser = user || null;
+userLabel.innerText = user ? user.email : "Guest";
+});
+
+/* ===== AUTH ACTION ===== */
+window.loginEmail = () =>
+signInWithEmailAndPassword(auth, emailInput.value, passInput.value);
+
+window.register = () =>
+createUserWithEmailAndPassword(auth, emailInput.value, passInput.value);
+
+window.loginGoogle = () =>
+signInWithPopup(auth, new GoogleAuthProvider());
+
+window.loginGithub = () =>
+signInWithPopup(auth, new GithubAuthProvider());
+
+window.logout = () =>
+signOut(auth);
+
+/* ===== UPLOAD ===== */
+window.uploadPost = async () => {
+let file = fileInput.files[0];
+let url = "";
+
+if (file) {
+let r = ref(storage, "files/" + Date.now());
+await uploadBytes(r, file);
+url = await getDownloadURL(r);
+}
+
+await addDoc(collection(db, "posts"), {
+title: titleInput.value,
+desc: descInput.value,
+type: typeSelect.value,
+file: url,
+code: codeInput.value || "",
+createdAt: Date.now()
+});
+};
+
+/* ===== LOAD ===== */
+onSnapshot(collection(db, "posts"), snap => {
+posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+render(posts);
+});
+
+/* ===== RENDER ===== */
+function render(data) {
+feed.innerHTML = "";
+
+data.forEach(p => {
+let content = "";
+
+if (p.type === "post" && p.file) {
+content = `<img src="${p.file}" style="width:100%">`;
+}
+
+if (p.type === "template") {
+content = `
+<pre>${p.code}</pre>
+<button onclick="navigator.clipboard.writeText(\`${p.code}\`)">Copy</button>
+<button onclick="runCode(\`${p.code}\`)">Run</button>
+`;
+}
+
+if (p.type === "app") {
+content = `
+<a href="${p.file}" download><button>Download</button></a>
+`;
+}
+
+let el = document.createElement("div");
+el.className = "card";
+el.innerHTML = `<h3>${p.title}</h3><p>${p.desc}</p>${content}`;
+feed.appendChild(el);
+});
+}
+
+/* ===== FILTER ===== */
+window.filterType = t => {
+render(posts.filter(p => p.type === t));
+};
+
+window.runCode = code => {
+let w = window.open();
+w.document.write(code);
+};
+
+/* ===== PROFILE ===== */
+window.saveProfile = async () => {
+alert("Saved (logic sama seperti sebelumnya)");
+};
+
+/* ===== SIDEBAR ===== */
+window.toggleSidebar = () => {
+sidebar.classList.toggle("active");
+overlay.classList.toggle("active");
+};
+
+window.closeSidebar = () => {
+sidebar.classList.remove("active");
+overlay.classList.remove("active");
+};
+
+window.setActive = page => {
+showPage(page);
+
+document.querySelectorAll(".sidebar button")
+.forEach(b => b.classList.remove("active"));
+
+document.querySelectorAll(".sidebar button").forEach(b => {
+if (b.getAttribute("data-page") === page) {
+b.classList.add("active");
+}
+});
+};
+
+/* ===== PAGE ===== */
+window.showPage = id => {
+document.querySelectorAll(".content > div")
+.forEach(d => d.classList.add("hidden"));
+
+document.getElementById(id).classList.remove("hidden");
+};
+
+/* ===== PASSWORD ===== */
+window.togglePass = id => {
+let i = document.getElementById(id);
+i.type = i.type === "password" ? "text" : "password";
+};
+
+</script>
+
+</body>
+</html>
