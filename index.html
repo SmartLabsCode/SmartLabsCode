@@ -25,12 +25,6 @@ padding:8px 12px;border-radius:20px;
 border:1px solid #ccc;outline:none;width:200px;
 }
 
-/* PROFILE */
-.profile-img{
-width:34px;height:34px;border-radius:50%;
-object-fit:cover;
-}
-
 /* SIDEBAR */
 .sidebar{
 position:fixed;top:60px;left:-260px;
@@ -80,16 +74,13 @@ display:flex;align-items:center;
 border:1px solid #ccc;
 border-radius:8px;margin:6px 0;
 background:#fff;
-gap:8px;
 padding:0 10px;
+gap:8px;
 }
-
-.input-box i{color:#555}
 
 .input-box input,.input-box textarea{
 flex:1;border:none;outline:none;
 padding:10px;
-font-family:inherit;
 }
 
 /* BUTTON */
@@ -151,14 +142,12 @@ justify-content:center;
 <button onclick="setPage('profile',this)"><i class="fa fa-user"></i>Edit</button>
 </div>
 
-<!-- CONTENT -->
 <div class="content">
 
 <!-- HOME -->
 <div id="home">
-<h2><i class="fa fa-rss"></i> Feed for you</h2>
+<h2><i class="fa fa-rss"></i> Feed</h2>
 
-<!-- BANNER (RESTORED) -->
 <div class="banner-wrap">
 <div class="banner">Banner 1</div>
 <div class="banner">Banner 2</div>
@@ -166,10 +155,10 @@ justify-content:center;
 </div>
 
 <div class="home-filter">
-<button class="active" onclick="filterHome('all',this)"><i class="fa fa-border-all"></i> All</button>
-<button onclick="filterHome('post',this)"><i class="fa fa-image"></i> Page</button>
-<button onclick="filterHome('template',this)"><i class="fa fa-code"></i> Template</button>
-<button onclick="filterHome('app',this)"><i class="fa fa-box"></i> App</button>
+<button class="active" onclick="filterHome('all',this)">All</button>
+<button onclick="filterHome('post',this)">Page</button>
+<button onclick="filterHome('template',this)">Template</button>
+<button onclick="filterHome('app',this)">App</button>
 </div>
 
 <div id="feed"></div>
@@ -177,7 +166,7 @@ justify-content:center;
 
 <!-- UPLOAD -->
 <div id="upload" class="hidden">
-<h3><i class="fa fa-cloud-upload"></i> Upload</h3>
+<h3>Upload</h3>
 
 <select id="typeSelect">
 <option value="post">Post</option>
@@ -185,62 +174,70 @@ justify-content:center;
 <option value="app">App</option>
 </select>
 
-<div class="input-box"><i class="fa fa-heading"></i><input id="titleInput" placeholder="Title"></div>
-<div class="input-box"><i class="fa fa-align-left"></i><input id="descInput" placeholder="Description"></div>
-<div class="input-box"><i class="fa fa-file"></i><input type="file" id="fileInput"></div>
-<div class="input-box"><i class="fa fa-code"></i><textarea id="codeInput" placeholder="Code"></textarea></div>
+<div class="input-box"><input id="titleInput" placeholder="Title"></div>
+<div class="input-box"><input id="descInput" placeholder="Desc"></div>
+<input type="file" id="fileInput">
+<textarea id="codeInput" placeholder="Code"></textarea>
 
-<button onclick="uploadPost()"><i class="fa fa-upload"></i> Upload</button>
+<button onclick="uploadPost()">Upload</button>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="hidden">
-<h3><i class="fa fa-lock"></i> Login</h3>
+<h3>Login</h3>
 
-<div class="input-box"><i class="fa fa-envelope"></i><input id="emailInput"></div>
-<div class="input-box"><i class="fa fa-key"></i><input id="passInput" type="password"></div>
+<div class="input-box"><input id="emailInput" placeholder="Email"></div>
+<div class="input-box"><input id="passInput" type="password" placeholder="Password"></div>
 
-<button onclick="loginEmail()"><i class="fa fa-right-to-bracket"></i> Login</button>
-<button onclick="register()"><i class="fa fa-user-plus"></i> Register</button>
-<button onclick="loginGoogle()"><i class="fa-brands fa-google"></i> Google</button>
-<button onclick="loginGithub()"><i class="fa-brands fa-github"></i> GitHub</button>
+<button onclick="loginEmail()">Login</button>
+<button onclick="register()">Register</button>
+<button onclick="loginGoogle()">Google</button>
+<button onclick="loginGithub()">GitHub</button>
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="hidden">
-<h3><i class="fa fa-user-pen"></i> Edit</h3>
+<h3>Edit</h3>
 
-<input type="file" id="photoInput">
-<div class="input-box"><i class="fa fa-user"></i><input id="usernameInput"></div>
-<div class="input-box"><i class="fa fa-calendar"></i><input id="birthInput" type="date"></div>
+<div class="input-box"><input id="usernameInput" placeholder="Username"></div>
+<div class="input-box"><input id="birthInput" type="date"></div>
 
-<button onclick="saveProfile()"><i class="fa fa-floppy-disk"></i> Save</button>
+<button onclick="saveProfile()">Save</button>
 </div>
 
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE FIXED -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
-getAuth, signInWithEmailAndPassword,
+getAuth,
+signInWithEmailAndPassword,
 createUserWithEmailAndPassword,
-GoogleAuthProvider, GithubAuthProvider,
-signInWithPopup, onAuthStateChanged
+GoogleAuthProvider,
+GithubAuthProvider,
+signInWithPopup,
+onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import {
-getFirestore, collection,
-addDoc, onSnapshot
+getFirestore,
+collection,
+addDoc,
+onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
-getStorage, ref,
-uploadBytes, getDownloadURL
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+/* CONFIG */
 const app = initializeApp({
 apiKey:"AIzaSyC5zC4TCP_Txe21iCbHbVbHxEk4YleDv0Q",
+authDomain:"smartlabscode.firebaseapp.com",
 projectId:"smartlabscode",
 storageBucket:"smartlabscode.appspot.com"
 });
@@ -252,21 +249,44 @@ const storage=getStorage();
 let posts=[];
 let currentFilter="all";
 
-/* AUTH */
+/* AUTH SAFE */
 onAuthStateChanged(auth,u=>{
 userLabel.innerText=u?u.email:"Guest";
 });
 
-/* LOGIN */
-window.loginEmail=()=>signInWithEmailAndPassword(auth,emailInput.value,passInput.value);
-window.register=()=>createUserWithEmailAndPassword(auth,emailInput.value,passInput.value);
+/* LOGIN FIXED */
+window.loginEmail=async()=>{
+try{
+await signInWithEmailAndPassword(auth,emailInput.value.trim(),passInput.value.trim());
+}catch(e){alert(e.message)}
+};
+
+window.register=async()=>{
+try{
+await createUserWithEmailAndPassword(auth,emailInput.value.trim(),passInput.value.trim());
+}catch(e){alert(e.message)}
+};
+
 window.loginGoogle=()=>signInWithPopup(auth,new GoogleAuthProvider());
 window.loginGithub=()=>signInWithPopup(auth,new GithubAuthProvider());
 
-/* UPLOAD */
+/* UPLOAD FIX (NO EMPTY BUG) */
 window.uploadPost=async()=>{
-let file=fileInput.files[0];
+
+const title=titleInput.value.trim();
+const desc=descInput.value.trim();
+const file=fileInput.files[0];
+const code=codeInput.value.trim();
+const type=typeSelect.value;
+
+if(!title || !desc){
+alert("Title & Desc wajib diisi");
+return;
+}
+
 let url="";
+
+try{
 
 if(file){
 let r=ref(storage,"files/"+Date.now());
@@ -275,13 +295,15 @@ url=await getDownloadURL(r);
 }
 
 await addDoc(collection(db,"posts"),{
-title:titleInput.value,
-desc:descInput.value,
-type:typeSelect.value,
-file:url,
-code:codeInput.value,
-time:Date.now()
+title,desc,type,file:url,code,time:Date.now()
 });
+
+alert("Upload sukses");
+
+}catch(e){
+alert("Upload gagal: "+e.message);
+}
+
 };
 
 /* LOAD */
@@ -292,13 +314,16 @@ render(posts);
 
 /* RENDER */
 function render(data){
-let filtered=currentFilter==="all"?data:data.filter(p=>p.type===currentFilter);
+let filtered=currentFilter==="all"
+?data
+:data.filter(p=>p.type===currentFilter);
+
 feed.innerHTML="";
 filtered.forEach(p=>{
 feed.innerHTML+=`
 <div class="card">
-<h3>${p.title}</h3>
-<p>${p.desc}</p>
+<h3>${p.title||""}</h3>
+<p>${p.desc||""}</p>
 ${p.file?`<img src="${p.file}" style="width:100%">`:``}
 ${p.code?`<pre>${p.code}</pre>`:``}
 </div>`;
@@ -306,18 +331,14 @@ ${p.code?`<pre>${p.code}</pre>`:``}
 }
 
 /* FILTER FIX */
-window.filterHome=(type,el)=>{
-currentFilter=type;
-
-document.querySelectorAll(".home-filter button")
-.forEach(b=>b.classList.remove("active"));
-
-el.classList.add("active");
-
+window.filterHome=(t,el)=>{
+currentFilter=t;
+document.querySelectorAll(".home-filter button").forEach(b=>b.classList.remove("active"));
+if(el) el.classList.add("active");
 render(posts);
 };
 
-/* SEARCH FIX */
+/* SEARCH */
 window.doSearch=()=>{
 let q=searchInput.value.toLowerCase();
 render(posts.filter(p=>
@@ -326,7 +347,7 @@ render(posts.filter(p=>
 ));
 };
 
-/* PAGE + SIDEBAR FOCUS FIX */
+/* PAGE */
 window.setPage=(id,el)=>{
 document.querySelectorAll(".content > div").forEach(e=>e.classList.add("hidden"));
 document.getElementById(id).classList.remove("hidden");
@@ -337,6 +358,7 @@ if(el) el.classList.add("active");
 closeSidebar();
 };
 
+/* SIDEBAR */
 window.toggleSidebar=()=>{
 sidebar.classList.add("active");
 overlay.classList.add("active");
