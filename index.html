@@ -84,9 +84,7 @@ gap:8px;
 padding:0 10px;
 }
 
-.input-box i{
-color:#555;
-}
+.input-box i{color:#555}
 
 .input-box input,.input-box textarea{
 flex:1;border:none;outline:none;
@@ -105,39 +103,26 @@ color:#fff;cursor:pointer;
 .home-filter{
 display:flex;gap:10px;margin:10px 0;
 }
+
 .home-filter button{
 flex:1;background:#e5e7eb;color:#111;
 }
+
 .home-filter button.active{
 background:#4f46e5;color:#fff;
 }
 
-/* DELETE */
-.del-btn{
-background:#ef4444;margin-top:8px;
+/* BANNER */
+.banner-wrap{
+display:flex;gap:10px;
+overflow-x:auto;margin-bottom:10px;
 }
 
-/* SOCIAL BUTTONS */
-.btn-google{
-background:#fff;color:#000;
-border:1px solid #ddd;
-width:100%;
-margin-top:8px;
-display:flex;
-align-items:center;
+.banner{
+min-width:200px;height:120px;
+background:#e5e7eb;border-radius:10px;
+display:flex;align-items:center;
 justify-content:center;
-gap:8px;
-}
-
-.btn-github{
-background:#24292e;
-color:#fff;
-width:100%;
-margin-top:8px;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:8px;
 }
 </style>
 </head>
@@ -146,29 +131,24 @@ gap:8px;
 
 <!-- NAVBAR -->
 <div class="navbar">
-<div style="display:flex;align-items:center;gap:10px;">
+<div>
 <i class="fa fa-bars" onclick="toggleSidebar()"></i>
 <b><i class="fa fa-code"></i> SmartLabsCode</b>
 </div>
 
-<input class="search" id="searchInput"
-placeholder="🔍 Search..." oninput="doSearch()">
+<input class="search" id="searchInput" placeholder="Search..." oninput="doSearch()">
 
-<div style="display:flex;align-items:center;gap:10px;">
-<img id="profileImg" class="profile-img"
-src="https://via.placeholder.com/40">
 <span id="userLabel">Guest</span>
-</div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-<button onclick="setPage('home')"><i class="fa fa-home"></i>Home</button>
-<button onclick="setPage('upload')"><i class="fa fa-upload"></i>Upload</button>
-<button onclick="setPage('login')"><i class="fa fa-right-to-bracket"></i>Login</button>
-<button onclick="setPage('profile')"><i class="fa fa-user"></i>Edit</button>
+<button onclick="setPage('home',this)" class="active"><i class="fa fa-home"></i>Home</button>
+<button onclick="setPage('upload',this)"><i class="fa fa-upload"></i>Upload</button>
+<button onclick="setPage('login',this)"><i class="fa fa-right-to-bracket"></i>Login</button>
+<button onclick="setPage('profile',this)"><i class="fa fa-user"></i>Edit</button>
 </div>
 
 <!-- CONTENT -->
@@ -178,19 +158,18 @@ src="https://via.placeholder.com/40">
 <div id="home">
 <h2><i class="fa fa-rss"></i> Feed for you</h2>
 
+<!-- BANNER (RESTORED) -->
+<div class="banner-wrap">
+<div class="banner">Banner 1</div>
+<div class="banner">Banner 2</div>
+<div class="banner">Banner 3</div>
+</div>
+
 <div class="home-filter">
-<button class="active" onclick="filterHome('all')">
-<i class="fa fa-border-all"></i> All
-</button>
-<button onclick="filterHome('post')">
-<i class="fa fa-image"></i> Page
-</button>
-<button onclick="filterHome('template')">
-<i class="fa fa-code"></i> Template
-</button>
-<button onclick="filterHome('app')">
-<i class="fa fa-box"></i> App
-</button>
+<button class="active" onclick="filterHome('all',this)"><i class="fa fa-border-all"></i> All</button>
+<button onclick="filterHome('post',this)"><i class="fa fa-image"></i> Page</button>
+<button onclick="filterHome('template',this)"><i class="fa fa-code"></i> Template</button>
+<button onclick="filterHome('app',this)"><i class="fa fa-box"></i> App</button>
 </div>
 
 <div id="feed"></div>
@@ -206,93 +185,42 @@ src="https://via.placeholder.com/40">
 <option value="app">App</option>
 </select>
 
-<div class="input-box">
-<i class="fa fa-heading"></i>
-<input id="titleInput" placeholder="Title">
-</div>
+<div class="input-box"><i class="fa fa-heading"></i><input id="titleInput" placeholder="Title"></div>
+<div class="input-box"><i class="fa fa-align-left"></i><input id="descInput" placeholder="Description"></div>
+<div class="input-box"><i class="fa fa-file"></i><input type="file" id="fileInput"></div>
+<div class="input-box"><i class="fa fa-code"></i><textarea id="codeInput" placeholder="Code"></textarea></div>
 
-<div class="input-box">
-<i class="fa fa-align-left"></i>
-<input id="descInput" placeholder="Description">
-</div>
-
-<div class="input-box">
-<i class="fa fa-file"></i>
-<input type="file" id="fileInput">
-</div>
-
-<div class="input-box">
-<i class="fa fa-code"></i>
-<textarea id="codeInput" placeholder="Code"></textarea>
-</div>
-
-<button onclick="uploadPost()">
-<i class="fa fa-upload"></i> Upload
-</button>
+<button onclick="uploadPost()"><i class="fa fa-upload"></i> Upload</button>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="hidden">
 <h3><i class="fa fa-lock"></i> Login</h3>
 
-<div class="input-box">
-<i class="fa fa-envelope"></i>
-<input id="emailInput" placeholder="Email">
-</div>
+<div class="input-box"><i class="fa fa-envelope"></i><input id="emailInput"></div>
+<div class="input-box"><i class="fa fa-key"></i><input id="passInput" type="password"></div>
 
-<div class="input-box">
-<i class="fa fa-key"></i>
-<input id="passInput" type="password" placeholder="Password">
-</div>
-
-<button onclick="loginEmail()">
-<i class="fa fa-right-to-bracket"></i> Login
-</button>
-
-<button onclick="register()">
-<i class="fa fa-user-plus"></i> Register
-</button>
-
-<button class="btn-google" onclick="loginGoogle()">
-<i class="fa-brands fa-google"></i> Google
-</button>
-
-<button class="btn-github" onclick="loginGithub()">
-<i class="fa-brands fa-github"></i> GitHub
-</button>
+<button onclick="loginEmail()"><i class="fa fa-right-to-bracket"></i> Login</button>
+<button onclick="register()"><i class="fa fa-user-plus"></i> Register</button>
+<button onclick="loginGoogle()"><i class="fa-brands fa-google"></i> Google</button>
+<button onclick="loginGithub()"><i class="fa-brands fa-github"></i> GitHub</button>
 </div>
 
 <!-- PROFILE -->
 <div id="profile" class="hidden">
-<h3><i class="fa fa-user-pen"></i> Edit Profile</h3>
+<h3><i class="fa fa-user-pen"></i> Edit</h3>
 
 <input type="file" id="photoInput">
+<div class="input-box"><i class="fa fa-user"></i><input id="usernameInput"></div>
+<div class="input-box"><i class="fa fa-calendar"></i><input id="birthInput" type="date"></div>
 
-<div class="input-box">
-<i class="fa fa-user"></i>
-<input id="usernameInput" placeholder="Username">
-</div>
-
-<div class="input-box">
-<i class="fa fa-pen"></i>
-<input id="bioInput" placeholder="Bio">
-</div>
-
-<div class="input-box">
-<i class="fa fa-calendar"></i>
-<input id="birthInput" type="date">
-</div>
-
-<button onclick="saveProfile()">
-<i class="fa fa-floppy-disk"></i> Save
-</button>
+<button onclick="saveProfile()"><i class="fa fa-floppy-disk"></i> Save</button>
 </div>
 
 </div>
 
 <!-- FIREBASE -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
 getAuth, signInWithEmailAndPassword,
@@ -377,13 +305,19 @@ ${p.code?`<pre>${p.code}</pre>`:``}
 });
 }
 
-/* FILTER */
-window.filterHome=t=>{
-currentFilter=t;
+/* FILTER FIX */
+window.filterHome=(type,el)=>{
+currentFilter=type;
+
+document.querySelectorAll(".home-filter button")
+.forEach(b=>b.classList.remove("active"));
+
+el.classList.add("active");
+
 render(posts);
 };
 
-/* SEARCH */
+/* SEARCH FIX */
 window.doSearch=()=>{
 let q=searchInput.value.toLowerCase();
 render(posts.filter(p=>
@@ -392,15 +326,17 @@ render(posts.filter(p=>
 ));
 };
 
-/* PAGE */
-window.setPage=id=>{
-document.querySelectorAll(".content > div")
-.forEach(e=>e.classList.add("hidden"));
+/* PAGE + SIDEBAR FOCUS FIX */
+window.setPage=(id,el)=>{
+document.querySelectorAll(".content > div").forEach(e=>e.classList.add("hidden"));
 document.getElementById(id).classList.remove("hidden");
+
+document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
+if(el) el.classList.add("active");
+
 closeSidebar();
 };
 
-/* SIDEBAR */
 window.toggleSidebar=()=>{
 sidebar.classList.add("active");
 overlay.classList.add("active");
@@ -410,7 +346,6 @@ window.closeSidebar=()=>{
 sidebar.classList.remove("active");
 overlay.classList.remove("active");
 };
-
 </script>
 
 </body>
